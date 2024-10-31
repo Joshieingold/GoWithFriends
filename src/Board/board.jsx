@@ -15,8 +15,8 @@ const PrisonerBowl = ({ color, count }) => {
                         className={`stone ${color}`} 
                         style={{ 
                             position: 'absolute',
-                            left: `${(stone % 5) * 20}px`,  // Adjust spacing as needed
-                            top: `${Math.floor(stone / 5) * 20}px`, // Stack vertically
+                            left: `${(stone % 5) * 20}px`,  
+                            top: `${Math.floor(stone / 5) * 20}px`, 
                         }} 
                     />
                 ))}
@@ -31,7 +31,7 @@ function Board() {
     const canvasRef = useRef(null);
     const [boardList, setBoardList] = useState(createBoard());
     const [currentColor, setCurrentColor] = useState("black");
-    const [prisoners, setPrisoners] = useState({ black: 0, white: 0 }); // Count prisoners
+    const [prisoners, setPrisoners] = useState({ black: 0, white: 0 }); 
 
     // Function to create the 19x19 board
     function createBoard() {
@@ -175,7 +175,7 @@ function Board() {
                 setBoardList(newBoardList);
                 setCurrentColor(currentColor === "black" ? "white" : "black");
             } else {
-                newBoardList[rowIndex][colIndex] = null; // Revert placement
+                newBoardList[rowIndex][colIndex] = null; 
                 alert("Invalid move: This stone has no liberties and will die!");
             }
         }

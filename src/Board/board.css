@@ -1,25 +1,25 @@
 .board-container {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center the canvas and image */
-    position: relative;  /* For positioning the canvas and image */
+    align-items: center;
+    position: relative;  
 }
 
 .go-board-image {
-    position: absolute; /* Position it over the canvas */
-    top: 0;            /* Align to the top of the canvas */
-    left: 0;           /* Align to the left of the canvas */
-    width: 570px;      /* Match canvas width */
-    height: 570px;     /* Match canvas height */
-    z-index: 0;        /* Ensure it's below the canvas */
+    position: absolute;
+    top: 0;            
+    left: 0;         
+    width: 570px;      
+    height: 570px;   
+    z-index: 0;       
 }
 
 .go-board-canvas {
-    z-index: 1;        /* Ensure it's above the image */
+    z-index: 1;      
 }
 
 .prisoners-container {
-    position: fixed; /* Fixed positioning so it doesn’t move */
+    position: fixed; 
     top: 10px; 
     right: 10px; 
     display: flex;
@@ -30,22 +30,22 @@
 
 
 .prisoner-bowl {
-    width: 100px; /* Width of the bowl */
-    height: 100px; /* Height of the bowl */
-    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
-    border: 1px solid #ccc; /* Light border for visibility */
-    border-radius: 25px; /* Rounded edges */
+    width: 100px; 
+    height: 100px;
+    background-color: rgba(82, 39, 0, 0.8); 
+    border: 1px solid #000000; 
+    border-radius: 20px; 
     position: relative;
-    overflow: hidden; /* Keep stones inside the bowl */
-    margin-bottom: 5px; /* Space between bowl and count */
+    overflow: hidden; 
+    margin-bottom: 5px; 
 }
 
 
 
 .stone {
-    width: 20px; /* Size of the stone */
-    height: 20px; /* Size of the stone */
-    border-radius: 50%; /* Circular shape */
+    width: 20px;
+    height: 20px; 
+    border-radius: 50%; 
     position: absolute;
 }
 
@@ -58,7 +58,7 @@
 }
 
 .count {
-    font-size: 16px; /* Font size for the count */
+    font-size: 16px; 
     text-align: center;
 }
 .blacksBowl {
