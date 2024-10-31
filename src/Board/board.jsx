@@ -5,18 +5,18 @@ import "./Board.css";
 function Board() {
     const canvasRef = useRef(null);
     const [boardList, setBoardList] = useState(createBoard());
-    const [currentColor, setCurrentColor] = useState("black"); // Go starts with black stones
+    const [currentColor, setCurrentColor] = useState("black");
+    const [prisoners, setPrisoners] = useState({ black: 0, white: 0 }); // Count prisoners
 
-    // Function to create the 19x19 board for the compute
+    // Function to create the 19x19 board
     function createBoard() {
         const currentBoard = [];
-        for (let i = 0; i < 19; i++) { 
-            const row = Array(19).fill(null); // Use null to represent empty cells
+        for (let i = 0; i < 19; i++) {
+            const row = Array(19).fill(null);
             currentBoard.push(row);
         }
         return currentBoard;
     }
-
     // Draw the grids on the canvas
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -77,8 +77,8 @@ function Board() {
         const visited = new Set(); // keeps track of places already visited.
 
         const explore = (r, c) => {
-            if (r < 0 || r >= 19 || c < 0 || c >= 19 || visited.has(`${r},${c}`)) return;
-            visited.add(`${r},${c}`);
+            if (r < 0 || r >= 19 || c < 0 || c >= 19 || visited.has(`${r},${c}`)) return; // checks if the placement is outside of game or visited. if so it returns.
+            visited.add(`${r},${c}`); // Else we add those cords to visited.
 
             if (boardList[r][c] === null) {
                 liberties.add(`${r},${c}`);
@@ -94,28 +94,71 @@ function Board() {
         return liberties.size > 0 ? liberties : null; // Return liberties if they exist
     };
 
+    const checkAndCapture = (row, col, color) => {
+        const opponentColor = color === "black" ? "white" : "black";
+        const capturedStones = [];
+
+        const checkLibertiesAndCapture = (r, c, visited) => {
+            if (r < 0 || r >= 19 || c < 0 || c >= 19 || visited.has(`${r},${c}`)) return;
+            visited.add(`${r},${c}`);
+
+            if (boardList[r][c] === opponentColor) {
+                // Check adjacent stones
+                if (checkLiberties(r, c, opponentColor) === null) {
+                    capturedStones.push([r, c]); // Capture this stone
+                    // Continue exploring
+                    checkLibertiesAndCapture(r - 1, c, visited);
+                    checkLibertiesAndCapture(r + 1, c, visited);
+                    checkLibertiesAndCapture(r, c - 1, visited);
+                    checkLibertiesAndCapture(r, c + 1, visited);
+                }
+            }
+        };
+
+        // Start checking adjacent stones
+        checkLibertiesAndCapture(row - 1, col, new Set());
+        checkLibertiesAndCapture(row + 1, col, new Set());
+        checkLibertiesAndCapture(row, col - 1, new Set());
+        checkLibertiesAndCapture(row, col + 1, new Set());
+
+        // Remove captured stones from the board and update prisoners
+        if (capturedStones.length > 0) {
+            const newBoardList = [...boardList];
+            capturedStones.forEach(([r, c]) => {
+                newBoardList[r][c] = null; // Remove stone
+            });
+
+            setPrisoners((prev) => ({ ...prev, [opponentColor]: prev[opponentColor] + capturedStones.length }));
+            setBoardList(newBoardList); // Update board with captured stones removed
+        }
+    };
     // Handle mouse clicks to place stones
     const handleClick = (event) => {
         const canvas = canvasRef.current;
         const rect = canvas.getBoundingClientRect();
-        const x = event.clientX - rect.left; // X position relative to the canvas
-        const y = event.clientY - rect.top;  // Y position relative to the canvas
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
 
         const cellSize = 30;
         const colIndex = Math.floor(x / cellSize);
         const rowIndex = Math.floor(y / cellSize);
 
-        // Check for valid move
         if (boardList[rowIndex][colIndex] === null) {
+            const newBoardList = [...boardList];
+            newBoardList[rowIndex][colIndex] = currentColor; // Place the stone
+
+            // Check for captures around the new stone
+            checkAndCapture(rowIndex, colIndex, currentColor);
+
+            // Check liberties for the newly placed stone
             const liberties = checkLiberties(rowIndex, colIndex, currentColor);
-            if (liberties) { // Place stone only if it has liberties
-                const newBoardList = [...boardList];
-                newBoardList[rowIndex][colIndex] = currentColor; // Set stone color
+            if (liberties) {
                 setBoardList(newBoardList);
-                setCurrentColor(currentColor === "black" ? "white" : "black"); // Switch turn
-            }
-            else {
-                return
+                setCurrentColor(currentColor === "black" ? "white" : "black");
+            } else {
+                // Invalid move: Revert placement
+                newBoardList[rowIndex][colIndex] = null;
+                alert("Invalid move: This stone has no liberties and will die!");
             }
         }
     };
