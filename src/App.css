@@ -1,0 +1,7 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center children horizontally */
+  justify-content: center; /* Center children vertically */
+  height: 100vh; /* Optional: full height for vertical centering */
+}

@@ -1,0 +1,20 @@
+.board {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #000; /* Border around the entire board */
+    margin: 20px auto; /* Center horizontally and add some space */
+}
+
+.board-row {
+    display: flex; /* Use flexbox to arrange cells in a row */
+}
+
+.board-cell {
+    width: 25px;  /* Adjust the cell size */
+    height: 25px; /* Adjust the cell size */
+    border: 1px solid #000; /* Border around each cell */
+    display: flex;
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
+    font-size: 18px; /* Adjust font size */
+}
