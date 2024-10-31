@@ -1,20 +1,19 @@
-.board {
+.board-container {
     display: flex;
     flex-direction: column;
-    border: 1px solid #000; /* Border around the entire board */
-    margin: 20px auto; /* Center horizontally and add some space */
+    align-items: center; /* Center the canvas and image */
+    position: relative;  /* For positioning the canvas and image */
 }
 
-.board-row {
-    display: flex; /* Use flexbox to arrange cells in a row */
+.go-board-image {
+    position: absolute; /* Position it over the canvas */
+    top: 0;            /* Align to the top of the canvas */
+    left: 0;           /* Align to the left of the canvas */
+    width: 570px;      /* Match canvas width */
+    height: 570px;     /* Match canvas height */
+    z-index: 1;        /* Ensure it's above the canvas */
 }
 
-.board-cell {
-    width: 25px;  /* Adjust the cell size */
-    height: 25px; /* Adjust the cell size */
-    border: 1px solid #000; /* Border around each cell */
-    display: flex;
-    align-items: center; /* Center content vertically */
-    justify-content: center; /* Center content horizontally */
-    font-size: 18px; /* Adjust font size */
+.go-board-canvas {
+    z-index: 2;        /* Ensure it's below the image */
 }
