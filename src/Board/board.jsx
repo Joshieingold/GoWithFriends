@@ -192,8 +192,8 @@ function Board() {
             />
             <img src={goBoardImage} alt="Go Board" className="go-board-image" />
             <div className="prisoners-container">
-                <PrisonerBowl color="black" count={prisoners.black} />
-                <PrisonerBowl color="white" count={prisoners.white} />
+                <PrisonerBowl color="black" count={prisoners.black} className="whitesBowl"/>
+                <PrisonerBowl color="white" count={prisoners.white} className="blacksBowl"/>
             </div>
         </div>
     );
