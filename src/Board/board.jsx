@@ -2,6 +2,31 @@ import { useEffect, useRef, useState } from "react";
 import goBoardImage from '../assets/boardImg.png';
 import "./Board.css";
 
+const PrisonerBowl = ({ color, count }) => {
+    // Create an array of stones based on the count
+    const stones = Array.from({ length: count }, (_, index) => index);
+
+    return (
+        <div className={`prisoner-bowl ${color}`}>
+            <div className="bowl">
+                {stones.map((stone) => (
+                    <div 
+                        key={stone} 
+                        className={`stone ${color}`} 
+                        style={{ 
+                            position: 'absolute',
+                            left: `${(stone % 5) * 20}px`,  // Adjust spacing as needed
+                            top: `${Math.floor(stone / 5) * 20}px`, // Stack vertically
+                        }} 
+                    />
+                ))}
+            </div>
+            <div className="count">{count}</div>
+        </div>
+    );
+};
+
+
 function Board() {
     const canvasRef = useRef(null);
     const [boardList, setBoardList] = useState(createBoard());
@@ -17,17 +42,18 @@ function Board() {
         }
         return currentBoard;
     }
+
     // Draw the grids on the canvas
     useEffect(() => {
         const canvas = canvasRef.current;
         const context = canvas.getContext("2d");
-        const cellSize = 30; // Size of each cell
+        const cellSize = 30;
 
         // Clear canvas
         context.clearRect(0, 0, canvas.width, canvas.height);
 
-        // This is the invisable grid the stones are placed on
-        context.strokeStyle = "rgba(0, 0, 200, 0)"; // invisable
+        // Invisible grid
+        context.strokeStyle = "rgba(0, 0, 200, 0)"; 
         for (let i = 0; i <= 19; i++) {
             context.beginPath();
             context.moveTo(i * cellSize, 0);
@@ -40,11 +66,11 @@ function Board() {
             context.stroke();
         }
 
-        // The gameboard grid.
+        // Gameboard grid
         context.strokeStyle = "#000000"; 
         for (let i = 0; i <= 19; i++) {
             context.beginPath();
-            const offset = cellSize / 2; // This puts the grid in the center of the red grid.
+            const offset = cellSize / 2;
             context.moveTo(i * cellSize + offset, 0);
             context.lineTo(i * cellSize + offset, 570);
             context.stroke();
@@ -58,12 +84,12 @@ function Board() {
         // Draw stones
         boardList.forEach((row, rowIndex) => {
             row.forEach((cell, colIndex) => {
-                if (cell) { // If there's a stone, draw it
+                if (cell) {
                     const x = colIndex * cellSize + cellSize / 2;
                     const y = rowIndex * cellSize + cellSize / 2;
                     context.beginPath();
-                    context.arc(x, y, cellSize / 2.7, 0, Math.PI * 2); // Stone size
-                    context.fillStyle = cell; // Use the color from boardList
+                    context.arc(x, y, cellSize / 2.5, 0, Math.PI * 2);
+                    context.fillStyle = cell;
                     context.fill();
                     context.stroke();
                 }
@@ -73,25 +99,25 @@ function Board() {
 
     // Function to check liberties
     const checkLiberties = (row, col, color) => {
-        const liberties = new Set(); // Creates a list of the empty cords around stone
-        const visited = new Set(); // keeps track of places already visited.
+        const liberties = new Set();
+        const visited = new Set();
 
         const explore = (r, c) => {
-            if (r < 0 || r >= 19 || c < 0 || c >= 19 || visited.has(`${r},${c}`)) return; // checks if the placement is outside of game or visited. if so it returns.
-            visited.add(`${r},${c}`); // Else we add those cords to visited.
+            if (r < 0 || r >= 19 || c < 0 || c >= 19 || visited.has(`${r},${c}`)) return;
+            visited.add(`${r},${c}`);
 
             if (boardList[r][c] === null) {
                 liberties.add(`${r},${c}`);
             } else if (boardList[r][c] === color) {
-                explore(r - 1, c); // Up
-                explore(r + 1, c); // Down
-                explore(r, c - 1); // Left
-                explore(r, c + 1); // Right
+                explore(r - 1, c);
+                explore(r + 1, c);
+                explore(r, c - 1);
+                explore(r, c + 1);
             }
         };
 
         explore(row, col);
-        return liberties.size > 0 ? liberties : null; // Return liberties if they exist
+        return liberties.size > 0 ? liberties : null;
     };
 
     const checkAndCapture = (row, col, color) => {
@@ -103,10 +129,8 @@ function Board() {
             visited.add(`${r},${c}`);
 
             if (boardList[r][c] === opponentColor) {
-                // Check adjacent stones
                 if (checkLiberties(r, c, opponentColor) === null) {
-                    capturedStones.push([r, c]); // Capture this stone
-                    // Continue exploring
+                    capturedStones.push([r, c]);
                     checkLibertiesAndCapture(r - 1, c, visited);
                     checkLibertiesAndCapture(r + 1, c, visited);
                     checkLibertiesAndCapture(r, c - 1, visited);
@@ -115,24 +139,22 @@ function Board() {
             }
         };
 
-        // Start checking adjacent stones
         checkLibertiesAndCapture(row - 1, col, new Set());
         checkLibertiesAndCapture(row + 1, col, new Set());
         checkLibertiesAndCapture(row, col - 1, new Set());
         checkLibertiesAndCapture(row, col + 1, new Set());
 
-        // Remove captured stones from the board and update prisoners
         if (capturedStones.length > 0) {
             const newBoardList = [...boardList];
             capturedStones.forEach(([r, c]) => {
-                newBoardList[r][c] = null; // Remove stone
+                newBoardList[r][c] = null;
             });
 
             setPrisoners((prev) => ({ ...prev, [opponentColor]: prev[opponentColor] + capturedStones.length }));
-            setBoardList(newBoardList); // Update board with captured stones removed
+            setBoardList(newBoardList);
         }
     };
-    // Handle mouse clicks to place stones
+
     const handleClick = (event) => {
         const canvas = canvasRef.current;
         const rect = canvas.getBoundingClientRect();
@@ -145,19 +167,15 @@ function Board() {
 
         if (boardList[rowIndex][colIndex] === null) {
             const newBoardList = [...boardList];
-            newBoardList[rowIndex][colIndex] = currentColor; // Place the stone
+            newBoardList[rowIndex][colIndex] = currentColor;
 
-            // Check for captures around the new stone
             checkAndCapture(rowIndex, colIndex, currentColor);
-
-            // Check liberties for the newly placed stone
             const liberties = checkLiberties(rowIndex, colIndex, currentColor);
             if (liberties) {
                 setBoardList(newBoardList);
                 setCurrentColor(currentColor === "black" ? "white" : "black");
             } else {
-                // Invalid move: Revert placement
-                newBoardList[rowIndex][colIndex] = null;
+                newBoardList[rowIndex][colIndex] = null; // Revert placement
                 alert("Invalid move: This stone has no liberties and will die!");
             }
         }
@@ -167,12 +185,16 @@ function Board() {
         <div className="board-container">
             <canvas
                 ref={canvasRef}
-                width={570}  // Adjust width according to cellSize * 19
-                height={570} // Adjust height according to cellSize * 19
+                width={570}
+                height={570}
                 className="go-board-canvas"
-                onClick={handleClick} // Add click handler
+                onClick={handleClick}
             />
             <img src={goBoardImage} alt="Go Board" className="go-board-image" />
+            <div className="prisoners-container">
+                <PrisonerBowl color="black" count={prisoners.black} />
+                <PrisonerBowl color="white" count={prisoners.white} />
+            </div>
         </div>
     );
 }
