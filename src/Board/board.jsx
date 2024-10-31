@@ -182,7 +182,8 @@ function Board() {
     };
 
     return (
-        <div className="board-container">
+        <div className="mainContainer">
+                           <div className="board-container">
             <canvas
                 ref={canvasRef}
                 width={570}
@@ -190,12 +191,18 @@ function Board() {
                 className="go-board-canvas"
                 onClick={handleClick}
             />
-            <img src={goBoardImage} alt="Go Board" className="go-board-image" />
-            <div className="prisoners-container">
-                <PrisonerBowl color="black" count={prisoners.black} className="whitesBowl"/>
-                <PrisonerBowl color="white" count={prisoners.white} className="blacksBowl"/>
-            </div>
+            <img src={goBoardImage} alt="Go Board" className="go-board-image" />  
+        </div>         
+                            
+                            
+                            <div className="whitesBowl">
+                    <PrisonerBowl color="black" count={prisoners.black} />
+                </div>
+                <div className="blacksBowl">
+                    <PrisonerBowl color="white" count={prisoners.white} className="blacksBowl"/>
+                </div>
         </div>
+
     );
 }
 

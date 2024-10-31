@@ -63,5 +63,11 @@
 }
 .blacksBowl {
     position: absolute;
-    bottom: 0px;
+    bottom: 15%;
+    right: 15%;
+}
+.whitesBowl {
+    position: absolute;
+    top: 15%;
+    left: 15%;
 }
