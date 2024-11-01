@@ -1,0 +1,17 @@
+Gameplay:
+    ☐ Add a way to pass.
+    ☐ If both players pass game is set to rearrange mode.
+    ☐ Create rearrange mode.
+    ☐ Create Review mode.
+    Rearrange Mode:
+        ☐ Allows player to click a ston and move it to where they would like it to go.
+        ☐ Also allow for dragging .
+        ☐ Would be cool but somewhat unessisary to have an AI learn how to arrange them for you.
+    Review Mode:
+        ☐ Allow for the user to skip through the game with left and right as well as see their move number.
+Visual:
+    ✔ Add Hoshi points. @done (11/1/2024, 3:21:10 PM)
+    ☐ Make the items on the board customizable.
+    ☐ Create some sort of Navbar that has useful features.
+Backend:
+    ☐ Keep track of the entire game.

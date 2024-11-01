@@ -71,7 +71,30 @@ function Board() {
         context.lineTo(555, i * cellSize + offset);
         context.stroke();
     }
+    const drawHoshiPoints = () => {
+        const hoshiPositions = [
+            { row: 3, col: 3 },
+            { row: 3, col: 9 },
+            { row: 3, col: 15 },
+            { row: 9, col: 3 },
+            { row: 9, col: 9 },
+            { row: 9, col: 15 },
+            { row: 15, col: 3 },
+            { row: 15, col: 9 },
+            { row: 15, col: 15 },
+        ];
 
+        hoshiPositions.forEach(({ row, col }) => {
+            const x = col * cellSize + cellSize / 2;
+            const y = row * cellSize + cellSize / 2;
+            context.beginPath();
+            context.arc(x, y, 3.5, 0, Math.PI * 2); 
+            context.fillStyle = "#000000"; 
+            context.fill();
+        });
+    };
+
+    drawHoshiPoints();
         // Draw stones
         boardList.forEach((row, rowIndex) => {
             row.forEach((cell, colIndex) => {
