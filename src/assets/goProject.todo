@@ -14,5 +14,6 @@ Visual:
     ☐ Make the items on the board customizable.
     ☐ Create some sort of Navbar that has useful features.
     ☐ Maybe add a hover visual for stones?
+    ☐ Some sort of indicator of whos turn it is.
 Backend:
     ☐ Keep track of the entire game.
