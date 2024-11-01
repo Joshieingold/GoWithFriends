@@ -11,11 +11,15 @@
     left: 0;         
     width: 570px;      
     height: 570px;   
-    z-index: 0;       
+    z-index: 0;      
+    background-color: rgb(218, 180, 55); 
+    border-radius: 1;
+    border: 1px solid #000000;
+
 }
 
 .go-board-canvas {
-    z-index: 1;      
+    z-index: 1;  
 }
 
 .prisoners-container {
@@ -30,14 +34,15 @@
 
 
 .prisoner-bowl {
-    width: 100px; 
-    height: 100px;
-    background-color: rgba(82, 39, 0, 0.8); 
+    width: 130px; 
+    height: 120px;
+    background-color: rgba(255, 255, 255, 0.8); 
     border: 1px solid #000000; 
     border-radius: 20px; 
     position: relative;
     overflow: hidden; 
-    margin-bottom: 5px; 
+    
+
 }
 
 
@@ -47,7 +52,8 @@
     height: 20px; 
     border-radius: 50%; 
     position: absolute;
-}
+    margin: 5%;
+}   
 
 .stone.black {
     background-color: black;
@@ -55,11 +61,18 @@
 
 .stone.white {
     background-color: white;
+    border:1px solid #000000;
 }
 
 .count {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-size: 16px; 
     text-align: center;
+    z-index: 200;
+
+    height: 2rem;
 }
 .blacksBowl {
     position: absolute;
@@ -70,4 +83,8 @@
     position: absolute;
     top: 15%;
     left: 15%;
+}
+.stats {
+    background-color: #000000;
+   border-radius: 20px;
 }

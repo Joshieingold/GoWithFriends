@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import goBoardImage from '../assets/boardImg.png';
 import "./Board.css";
 
 const PrisonerBowl = ({ color, count }) => {
@@ -7,22 +6,26 @@ const PrisonerBowl = ({ color, count }) => {
     const stones = Array.from({ length: count }, (_, index) => index);
 
     return (
-        <div className={`prisoner-bowl ${color}`}>
-            <div className="bowl">
-                {stones.map((stone) => (
-                    <div 
-                        key={stone} 
-                        className={`stone ${color}`} 
-                        style={{ 
-                            position: 'absolute',
-                            left: `${(stone % 5) * 20}px`,  
-                            top: `${Math.floor(stone / 5) * 20}px`, 
-                        }} 
-                    />
-                ))}
+        <div className="stats">
+            <div className={`prisoner-bowl ${color}`}>
+                <div className="bowl">
+                    {stones.map((stone) => (
+                        <div 
+                            key={stone} 
+                            className={`stone ${color}`} 
+                            style={{ 
+                                position: 'absolute',
+                                left: `${(stone % 5) * 20}px`,  
+                                top: `${Math.floor(stone / 5) * 20}px`,
+                            }} 
+                        />
+                    ))}
+                </div>
+                
             </div>
-            <div className="count">{count}</div>
+        <div className="count">{count}</div>
         </div>
+
     );
 };
 
@@ -52,34 +55,22 @@ function Board() {
         // Clear canvas
         context.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Invisible grid
-        context.strokeStyle = "rgba(0, 0, 200, 0)"; 
-        for (let i = 0; i <= 19; i++) {
-            context.beginPath();
-            context.moveTo(i * cellSize, 0);
-            context.lineTo(i * cellSize, 570);
-            context.stroke();
-
-            context.beginPath();
-            context.moveTo(0, i * cellSize);
-            context.lineTo(570, i * cellSize);
-            context.stroke();
-        }
-
+        
         // Gameboard grid
         context.strokeStyle = "#000000"; 
-        for (let i = 0; i <= 19; i++) {
-            context.beginPath();
-            const offset = cellSize / 2;
-            context.moveTo(i * cellSize + offset, 0);
-            context.lineTo(i * cellSize + offset, 570);
-            context.stroke();
+    for (let i = 0; i < 19; i++) {
+        context.beginPath();
+        const offset = cellSize / 2;
 
-            context.beginPath();
-            context.moveTo(0, i * cellSize + offset);
-            context.lineTo(570, i * cellSize + offset);
-            context.stroke();
-        }
+        context.moveTo(i * cellSize + offset, offset);
+        context.lineTo(i * cellSize + offset, 555);
+        context.stroke();
+
+        // Horizontal lines
+        context.moveTo(offset, i * cellSize + offset);
+        context.lineTo(555, i * cellSize + offset);
+        context.stroke();
+    }
 
         // Draw stones
         boardList.forEach((row, rowIndex) => {
@@ -96,6 +87,7 @@ function Board() {
             });
         });
     }, [boardList]);
+    
 
     // Function to check liberties
     const checkLiberties = (row, col, color) => {
@@ -176,31 +168,28 @@ function Board() {
                 setCurrentColor(currentColor === "black" ? "white" : "black");
             } else {
                 newBoardList[rowIndex][colIndex] = null; 
-                alert("Invalid move: This stone has no liberties and will die!");
             }
         }
     };
 
     return (
         <div className="mainContainer">
-                           <div className="board-container">
-            <canvas
-                ref={canvasRef}
-                width={570}
-                height={570}
-                className="go-board-canvas"
-                onClick={handleClick}
-            />
-            <img src={goBoardImage} alt="Go Board" className="go-board-image" />  
-        </div>         
-                            
-                            
-                            <div className="whitesBowl">
+            <div className="board-container">
+                <canvas
+                    ref={canvasRef}
+                    width={570}
+                    height={570}
+                    className="go-board-canvas"
+                    onClick={handleClick}
+                />
+                <div alt="Go Board" className="go-board-image">  </div>
+            </div>                      
+            <div className="whitesBowl">
                     <PrisonerBowl color="black" count={prisoners.black} />
-                </div>
-                <div className="blacksBowl">
-                    <PrisonerBowl color="white" count={prisoners.white} className="blacksBowl"/>
-                </div>
+            </div>
+            <div className="blacksBowl">
+                <PrisonerBowl color="white" count={prisoners.white} className="blacksBowl"/>
+            </div>
         </div>
 
     );
