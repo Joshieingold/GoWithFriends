@@ -13,5 +13,6 @@ Visual:
     ✔ Add Hoshi points. @done (11/1/2024, 3:21:10 PM)
     ☐ Make the items on the board customizable.
     ☐ Create some sort of Navbar that has useful features.
+    ☐ Maybe add a hover visual for stones?
 Backend:
     ☐ Keep track of the entire game.
