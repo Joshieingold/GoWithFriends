@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import capture from "../assets/stoneCapture.mp3";
+import place from "../assets/stonePlace.mp3";
 import "./Board.css";
 
 const PrisonerBowl = ({ color, count }) => {
-    // Create an array of stones based on the count
     const stones = Array.from({ length: count }, (_, index) => index);
 
     return (
@@ -21,14 +22,11 @@ const PrisonerBowl = ({ color, count }) => {
                         />
                     ))}
                 </div>
-                
             </div>
-        <div className="count">{count}</div>
+            <div className="count">{count}</div>
         </div>
-
     );
 };
-
 
 function Board() {
     const canvasRef = useRef(null);
@@ -36,7 +34,15 @@ function Board() {
     const [currentColor, setCurrentColor] = useState("black");
     const [prisoners, setPrisoners] = useState({ black: 0, white: 0 }); 
 
-    // Function to create the 19x19 board
+    function play(sound) {
+        const audio  = new Audio(sound);
+        audio.volume = 1.0;
+        audio.play().catch(error => {
+            console.error("Audio play error:", error);
+        });
+
+    }
+
     function createBoard() {
         const currentBoard = [];
         for (let i = 0; i < 19; i++) {
@@ -46,56 +52,52 @@ function Board() {
         return currentBoard;
     }
 
-    // Draw the grids on the canvas
     useEffect(() => {
         const canvas = canvasRef.current;
         const context = canvas.getContext("2d");
         const cellSize = 30;
 
-        // Clear canvas
         context.clearRect(0, 0, canvas.width, canvas.height);
 
-        
-        // Gameboard grid
         context.strokeStyle = "#000000"; 
-    for (let i = 0; i < 19; i++) {
-        context.beginPath();
-        const offset = cellSize / 2;
-
-        context.moveTo(i * cellSize + offset, offset);
-        context.lineTo(i * cellSize + offset, 555);
-        context.stroke();
-
-        // Horizontal lines
-        context.moveTo(offset, i * cellSize + offset);
-        context.lineTo(555, i * cellSize + offset);
-        context.stroke();
-    }
-    const drawHoshiPoints = () => {
-        const hoshiPositions = [
-            { row: 3, col: 3 },
-            { row: 3, col: 9 },
-            { row: 3, col: 15 },
-            { row: 9, col: 3 },
-            { row: 9, col: 9 },
-            { row: 9, col: 15 },
-            { row: 15, col: 3 },
-            { row: 15, col: 9 },
-            { row: 15, col: 15 },
-        ];
-
-        hoshiPositions.forEach(({ row, col }) => {
-            const x = col * cellSize + cellSize / 2;
-            const y = row * cellSize + cellSize / 2;
+        for (let i = 0; i < 19; i++) {
             context.beginPath();
-            context.arc(x, y, 3.5, 0, Math.PI * 2); 
-            context.fillStyle = "#000000"; 
-            context.fill();
-        });
-    };
+            const offset = cellSize / 2;
 
-    drawHoshiPoints();
-        // Draw stones
+            context.moveTo(i * cellSize + offset, offset);
+            context.lineTo(i * cellSize + offset, 555);
+            context.stroke();
+
+            context.moveTo(offset, i * cellSize + offset);
+            context.lineTo(555, i * cellSize + offset);
+            context.stroke();
+        }
+
+        const drawHoshiPoints = () => {
+            const hoshiPositions = [
+                { row: 3, col: 3 },
+                { row: 3, col: 9 },
+                { row: 3, col: 15 },
+                { row: 9, col: 3 },
+                { row: 9, col: 9 },
+                { row: 9, col: 15 },
+                { row: 15, col: 3 },
+                { row: 15, col: 9 },
+                { row: 15, col: 15 },
+            ];
+
+            hoshiPositions.forEach(({ row, col }) => {
+                const x = col * cellSize + cellSize / 2;
+                const y = row * cellSize + cellSize / 2;
+                context.beginPath();
+                context.arc(x, y, 3.5, 0, Math.PI * 2); 
+                context.fillStyle = "#000000"; 
+                context.fill();
+            });
+        };
+
+        drawHoshiPoints();
+
         boardList.forEach((row, rowIndex) => {
             row.forEach((cell, colIndex) => {
                 if (cell) {
@@ -110,9 +112,7 @@ function Board() {
             });
         });
     }, [boardList]);
-    
 
-    // Function to check liberties
     const checkLiberties = (row, col, color) => {
         const liberties = new Set();
         const visited = new Set();
@@ -168,6 +168,8 @@ function Board() {
             setPrisoners((prev) => ({ ...prev, [opponentColor]: prev[opponentColor] + capturedStones.length }));
             setBoardList(newBoardList);
         }
+
+        return capturedStones;
     };
 
     const handleClick = (event) => {
@@ -184,13 +186,23 @@ function Board() {
             const newBoardList = [...boardList];
             newBoardList[rowIndex][colIndex] = currentColor;
 
-            checkAndCapture(rowIndex, colIndex, currentColor);
+            // Play the sound for placing a stone
+            play(place); // Adjust the sound path as necessary
+
+            // Check for captures
+            const capturedStones = checkAndCapture(rowIndex, colIndex, currentColor);
+
+            // Play the sound for capturing if any stones were captured
+            if (capturedStones.length > 0) {
+                play(capture); // Adjust the sound path as necessary
+            }
+
             const liberties = checkLiberties(rowIndex, colIndex, currentColor);
             if (liberties) {
                 setBoardList(newBoardList);
                 setCurrentColor(currentColor === "black" ? "white" : "black");
             } else {
-                newBoardList[rowIndex][colIndex] = null; 
+                newBoardList[rowIndex][colIndex] = null; // Undo the placement if no liberties
             }
         }
     };
@@ -205,16 +217,15 @@ function Board() {
                     className="go-board-canvas"
                     onClick={handleClick}
                 />
-                <div alt="Go Board" className="go-board-image">  </div>
+                <div alt="Go Board" className="go-board-image"></div>
             </div>                      
             <div className="whitesBowl">
-                    <PrisonerBowl color="black" count={prisoners.black} />
+                <PrisonerBowl color="black" count={prisoners.black} />
             </div>
             <div className="blacksBowl">
-                <PrisonerBowl color="white" count={prisoners.white} className="blacksBowl"/>
+                <PrisonerBowl color="white" count={prisoners.white} />
             </div>
         </div>
-
     );
 }
 
