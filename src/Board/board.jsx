@@ -3,11 +3,11 @@ import capture from "../assets/stoneCapture.mp3";
 import place from "../assets/stonePlace.mp3";
 import "./Board.css";
 
-const PrisonerBowl = ({ color, count }) => {
+const PrisonerBowl = ({ color, count, isFlipped, onPass }) => {
     const stones = Array.from({ length: count }, (_, index) => index);
 
     return (
-        <div className="stats">
+        <div className={`stats ${isFlipped ? 'flipped' : ''}`}>
             <div className={`prisoner-bowl ${color}`}>
                 <div className="bowl">
                     {stones.map((stone) => (
@@ -24,6 +24,7 @@ const PrisonerBowl = ({ color, count }) => {
                 </div>
             </div>
             <div className="count">{count}</div>
+            <button className="passButton" onClick={onPass}>Pass</button>
         </div>
     );
 };
@@ -33,14 +34,31 @@ function Board() {
     const [boardList, setBoardList] = useState(createBoard());
     const [currentColor, setCurrentColor] = useState("black");
     const [prisoners, setPrisoners] = useState({ black: 0, white: 0 }); 
+    const [passCount, setPassCount] = useState({ black: 0, white: 0 });
+    const [gameOver, setGameOver] = useState(false);
+    const [isWhiteFlipped, setIsWhiteFlipped] = useState(false);
 
     function play(sound) {
-        const audio  = new Audio(sound);
+        const audio = new Audio(sound);
         audio.volume = 1.0;
         audio.play().catch(error => {
             console.error("Audio play error:", error);
         });
+    }
 
+    function pass() {
+        setPassCount(prev => {
+            const newPassCount = { ...prev, [currentColor]: prev[currentColor] + 1 };
+
+            // Check if both players have passed
+            if (newPassCount.black > 0 && newPassCount.white > 0) {
+                console.log("Game Over!");
+                setGameOver(true); // Set game over state
+            }
+
+            setCurrentColor(currentColor === "black" ? "white" : "black");
+            return newPassCount;
+        });
     }
 
     function createBoard() {
@@ -51,6 +69,10 @@ function Board() {
         }
         return currentBoard;
     }
+
+    const toggleWhiteFlip = () => {
+        setIsWhiteFlipped(prev => !prev);
+    };
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -165,7 +187,7 @@ function Board() {
                 newBoardList[r][c] = null;
             });
 
-            setPrisoners((prev) => ({ ...prev, [opponentColor]: prev[opponentColor] + capturedStones.length }));
+            setPrisoners(prev => ({ ...prev, [opponentColor]: prev[opponentColor] + capturedStones.length }));
             setBoardList(newBoardList);
         }
 
@@ -173,6 +195,8 @@ function Board() {
     };
 
     const handleClick = (event) => {
+        if (gameOver) return; // Prevent placing stones if game is over
+
         const canvas = canvasRef.current;
         const rect = canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
@@ -187,14 +211,15 @@ function Board() {
             newBoardList[rowIndex][colIndex] = currentColor;
 
             // Play the sound for placing a stone
-            play(place); // Adjust the sound path as necessary
-
+            play(place);
+            setPassCount({ black: 0, white: 0 }); // Reset pass counts on a valid move
+            
             // Check for captures
             const capturedStones = checkAndCapture(rowIndex, colIndex, currentColor);
 
             // Play the sound for capturing if any stones were captured
             if (capturedStones.length > 0) {
-                play(capture); // Adjust the sound path as necessary
+                play(capture);
             }
 
             const liberties = checkLiberties(rowIndex, colIndex, currentColor);
@@ -209,6 +234,9 @@ function Board() {
 
     return (
         <div className="mainContainer">
+            <nav>
+                <button onClick={toggleWhiteFlip}>Flip White Prisoner Bowl</button>
+            </nav>
             <div className="board-container">
                 <canvas
                     ref={canvasRef}
@@ -218,13 +246,22 @@ function Board() {
                     onClick={handleClick}
                 />
                 <div alt="Go Board" className="go-board-image"></div>
-            </div>                      
+            </div>
             <div className="whitesBowl">
-                <PrisonerBowl color="black" count={prisoners.black} />
+                <PrisonerBowl 
+                    color="black" 
+                    count={prisoners.black} 
+                    isFlipped={isWhiteFlipped} 
+                    onPass={pass}  // Pass the function here
+                />
             </div>
             <div className="blacksBowl">
-                <PrisonerBowl color="white" count={prisoners.white} />
+                <PrisonerBowl 
+                    color="white" 
+                    count={prisoners.white} 
+                />
             </div>
+            {gameOver && <div className="game-over-message">Game Over!</div>}
         </div>
     );
 }

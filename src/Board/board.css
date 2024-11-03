@@ -87,4 +87,20 @@
 .stats {
     background-color: #000000;
    border-radius: 20px;
+   transition: transform 0.6s ease; /* Add a transition effect */
 }
+
+
+.stats.flipped {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
+}
+
+.prisoner-bowl {
+    position: relative;
+    width: 100px; 
+    height: 100px; 
+    overflow: hidden;
+}
+
+
