@@ -13,8 +13,8 @@ Visual:
     ✔ Add Hoshi points. @done (11/1/2024, 3:21:10 PM)
     ☐ Make the items on the board customizable.
     ✔ Create some sort of Navbar that has useful features. @done (11/3/2024, 4:59:56 PM)
-    ☐ Maybe add a hover visual for stones?
-    ☐ Some sort of indicator of whos turn it is.
+    ✘ Maybe add a hover visual for stones? @cancelled (11/3/2024, 6:56:05 PM)
+    ✔ Some sort of indicator of whos turn it is. @done (11/3/2024, 7:14:09 PM)
     ✔ Add sfx when pieces are placed and captured. @done (11/3/2024, 2:27:37 PM)
     ✔ Make player bowls able to be flipped for real board experience. @done (11/3/2024, 4:06:43 PM)
 Backend:
