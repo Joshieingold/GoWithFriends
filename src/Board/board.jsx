@@ -5,11 +5,11 @@ import capture from "../assets/stoneCapture.mp3";
 import place from "../assets/stonePlace.mp3";
 import "./Board.css";
 
-const PrisonerBowl = ({ color, count, isFlipped, onPass }) => {
+const PrisonerBowl = ({ color, count, isFlipped, onPass, isCurrentTurn }) => {
     const stones = Array.from({ length: count }, (_, index) => index);
 
     return (
-        <div className={`stats ${isFlipped ? 'flipped' : ''}`}>
+        <div className={`stats ${isFlipped ? 'flipped' : ''} ${isCurrentTurn ? 'highlight' : ''}`}>
             <div className={`prisoner-bowl ${color}`}>
                 <div className="bowl">
                     {stones.map((stone) => (
@@ -30,6 +30,7 @@ const PrisonerBowl = ({ color, count, isFlipped, onPass }) => {
         </div>
     );
 };
+
 
 function Board() {
     const canvasRef = useRef(null);
@@ -258,6 +259,7 @@ function Board() {
                     <img src={flipIcon} className="flipImg" alt="Flip Icon" />
                 </button>
             </nav>
+            {gameOver && <div className="game-over-message">Game Over!</div>}
             <div className="board-container">
                 <canvas
                     ref={canvasRef}
@@ -273,17 +275,19 @@ function Board() {
                     color="black" 
                     count={prisoners.black} 
                     isFlipped={isWhiteFlipped} 
-                    onPass={pass}  // Pass function passed here
+                    onPass={pass}
+                    isCurrentTurn={currentColor === "black"} // Highlight if it's black's turn
                 />
             </div>
             <div className="blacksBowl">
                 <PrisonerBowl 
                     color="white" 
                     count={prisoners.white} 
-                    onPass={pass} // Also pass to the white bowl if needed
+                    onPass={pass}
+                    isCurrentTurn={currentColor === "white"} // Highlight if it's white's turn
                 />
             </div>
-            {gameOver && <div className="game-over-message">Game Over!</div>}
+            
         </div>
     );
 }

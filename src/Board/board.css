@@ -87,7 +87,8 @@
 .stats {
     background-color: #000000;
    border-radius: 20px;
-   transition: transform 0.6s ease; /* Add a transition effect */
+   transition: transform 0.6s ease;
+   border: 2px solid rgba(0, 0, 0, 0.349); /* Optional border */
 }
 
 
@@ -107,8 +108,10 @@
 .passButton {
     width: 100%;
     background-color: rgb(10, 10, 10);
+    border-radius: 18px;
 
 }
+
 nav {
     position: fixed;
     left: 0px;
@@ -137,33 +140,23 @@ nav {
 .flipImg {
     height: 30px;
 
+
 }
 .resetImg {
     height: 30px;
 }
-@media (max-width: 600px) {
-    .navButton {
-        width: 40px;
-        height: 40px; /* Make buttons smaller */
-    }
-
-    .prisoner-bowl {
-        width: 100px; /* Smaller prisoner bowl on small screens */
-        height: 90px;
-    }
-
-    .count {
-        font-size: 14px; /* Smaller text for counts */
-    }
+.game-over-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: large;    
 }
+.stats.highlight {
+    border: 2px solid rgba(25, 150, 0, 0.63); /* Optional border */
+    transition: background-color 0.5s ease; /* Smooth transition */
+}
+.stats.flipped.highlight {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
 
-@media (max-width: 400px) {
-    .mainContainer {
-        padding: 10px; /* Less padding on very small screens */
-    }
-
-    .navButton {
-        width: 30px;
-        height: 30px; /* Further reduce button size */
-    }
 }

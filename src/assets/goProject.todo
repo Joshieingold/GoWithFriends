@@ -1,10 +1,10 @@
 Gameplay:
-    ☐ Add a way to pass.
+    ✔ Add a way to pass. @done (11/3/2024, 4:59:41 PM)
     ☐ If both players pass game is set to rearrange mode.
     ☐ Create rearrange mode.
     ☐ Create Review mode.
     Rearrange Mode:
-        ☐ Allows player to click a ston and move it to where they would like it to go.
+        ☐ Allows player to click a stone and move it to where they would like it to go.
         ☐ Also allow for dragging .
         ☐ Would be cool but somewhat unessisary to have an AI learn how to arrange them for you.
     Review Mode:
@@ -12,7 +12,7 @@ Gameplay:
 Visual:
     ✔ Add Hoshi points. @done (11/1/2024, 3:21:10 PM)
     ☐ Make the items on the board customizable.
-    ☐ Create some sort of Navbar that has useful features.
+    ✔ Create some sort of Navbar that has useful features. @done (11/3/2024, 4:59:56 PM)
     ☐ Maybe add a hover visual for stones?
     ☐ Some sort of indicator of whos turn it is.
     ✔ Add sfx when pieces are placed and captured. @done (11/3/2024, 2:27:37 PM)
