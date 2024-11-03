@@ -1,11 +1,12 @@
+// Navbar.js
+import React from 'react';
 
-const navbar = () => {
-return (
-    <div className="toolbar">
-        
-    </div>
+const Navbar = ({ onFlip }) => {
+    return (
+        <nav>
+            <button onClick={onFlip}>Flip Prisoner Bowl</button>
+        </nav>
+    );
+};
 
-);
-}
-
-export default navbar;
+export default Navbar;

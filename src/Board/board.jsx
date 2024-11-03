@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import flipIcon from "../assets/flip.png";
+import resetIcon from "../assets/reset.png";
 import capture from "../assets/stoneCapture.mp3";
 import place from "../assets/stonePlace.mp3";
 import "./Board.css";
@@ -46,6 +48,14 @@ function Board() {
         });
     }
 
+    function resetGame() {
+        setBoardList(createBoard());
+        setCurrentColor("black");
+        setPrisoners({ black: 0, white: 0 });
+        setPassCount({ black: 0, white: 0 });
+        setGameOver(false);
+    }
+
     function pass() {
         setPassCount(prev => {
             const newPassCount = { ...prev, [currentColor]: prev[currentColor] + 1 };
@@ -77,8 +87,13 @@ function Board() {
     useEffect(() => {
         const canvas = canvasRef.current;
         const context = canvas.getContext("2d");
-        const cellSize = 30;
 
+
+        const canvasSize = Math.min(window.innerWidth * 0.9, 570); // 90% of the window width, max 570px
+        canvas.width = canvasSize;
+        canvas.height = canvasSize;
+    
+        const cellSize = canvasSize / 19; // Adjust cell size based on canvas size
         context.clearRect(0, 0, canvas.width, canvas.height);
 
         context.strokeStyle = "#000000"; 
@@ -232,10 +247,16 @@ function Board() {
         }
     };
 
+
     return (
         <div className="mainContainer">
             <nav>
-                <button onClick={toggleWhiteFlip}>Flip White Prisoner Bowl</button>
+                <button onClick={resetGame} className="navButton reset">
+                    <img src={resetIcon} alt="Reset Icon" className="resetImg" />
+                </button>
+                <button onClick={toggleWhiteFlip} className="navButton flip" alt="Flip">
+                    <img src={flipIcon} className="flipImg" alt="Flip Icon" />
+                </button>
             </nav>
             <div className="board-container">
                 <canvas
@@ -252,13 +273,14 @@ function Board() {
                     color="black" 
                     count={prisoners.black} 
                     isFlipped={isWhiteFlipped} 
-                    onPass={pass}  // Pass the function here
+                    onPass={pass}  // Pass function passed here
                 />
             </div>
             <div className="blacksBowl">
                 <PrisonerBowl 
                     color="white" 
                     count={prisoners.white} 
+                    onPass={pass} // Also pass to the white bowl if needed
                 />
             </div>
             {gameOver && <div className="game-over-message">Game Over!</div>}

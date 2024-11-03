@@ -76,12 +76,12 @@
 }
 .blacksBowl {
     position: absolute;
-    bottom: 15%;
+    bottom: 2rem;
     right: 15%;
 }
 .whitesBowl {
     position: absolute;
-    top: 15%;
+    top: 3rem;
     left: 15%;
 }
 .stats {
@@ -104,3 +104,66 @@
 }
 
 
+.passButton {
+    width: 100%;
+    background-color: rgb(10, 10, 10);
+
+}
+nav {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: fit-content;
+    height: 100vh;
+    background-color: black;
+    display: table-column;
+    justify-content: baseline;
+    align-items: baseline;
+
+}
+.navButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 4vw;
+    height: 4vw;
+    background-color: rgba(0, 0, 0, 0);
+    border-bottom: 1px solid white;
+    border-radius: 0%;
+    margin-bottom: 5px;
+    
+
+}
+.flipImg {
+    height: 30px;
+
+}
+.resetImg {
+    height: 30px;
+}
+@media (max-width: 600px) {
+    .navButton {
+        width: 40px;
+        height: 40px; /* Make buttons smaller */
+    }
+
+    .prisoner-bowl {
+        width: 100px; /* Smaller prisoner bowl on small screens */
+        height: 90px;
+    }
+
+    .count {
+        font-size: 14px; /* Smaller text for counts */
+    }
+}
+
+@media (max-width: 400px) {
+    .mainContainer {
+        padding: 10px; /* Less padding on very small screens */
+    }
+
+    .navButton {
+        width: 30px;
+        height: 30px; /* Further reduce button size */
+    }
+}

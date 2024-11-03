@@ -16,5 +16,6 @@ Visual:
     ☐ Maybe add a hover visual for stones?
     ☐ Some sort of indicator of whos turn it is.
     ✔ Add sfx when pieces are placed and captured. @done (11/3/2024, 2:27:37 PM)
+    ✔ Make player bowls able to be flipped for real board experience. @done (11/3/2024, 4:06:43 PM)
 Backend:
     ☐ Keep track of the entire game.
