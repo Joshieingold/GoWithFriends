@@ -15,6 +15,6 @@ Visual:
     ☐ Create some sort of Navbar that has useful features.
     ☐ Maybe add a hover visual for stones?
     ☐ Some sort of indicator of whos turn it is.
-    ☐ Add sfx when pieces are placed and captured.
+    ✔ Add sfx when pieces are placed and captured. @done (11/3/2024, 2:27:37 PM)
 Backend:
     ☐ Keep track of the entire game.
