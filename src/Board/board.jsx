@@ -276,7 +276,7 @@ function Board() {
                     count={prisoners.black} 
                     isFlipped={isWhiteFlipped} 
                     onPass={pass}
-                    isCurrentTurn={currentColor === "black"} // Highlight if it's black's turn
+                    isCurrentTurn={currentColor === "white"} // Highlight if it's black's turn
                 />
             </div>
             <div className="blacksBowl">
@@ -284,7 +284,7 @@ function Board() {
                     color="white" 
                     count={prisoners.white} 
                     onPass={pass}
-                    isCurrentTurn={currentColor === "white"} // Highlight if it's white's turn
+                    isCurrentTurn={currentColor === "black"} // Highlight if it's white's turn
                 />
             </div>
             
