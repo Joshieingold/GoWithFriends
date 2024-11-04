@@ -5,6 +5,8 @@ import capture from "../assets/stoneCapture.mp3";
 import place from "../assets/stonePlace.mp3";
 import "./Board.css";
 
+
+// This contains the data for the players captured stones.
 const PrisonerBowl = ({ color, count, isFlipped, onPass, isCurrentTurn }) => {
     const stones = Array.from({ length: count }, (_, index) => index);
 
