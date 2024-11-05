@@ -1,3 +1,5 @@
+/* Board Details */
+
 .board-container {
     display: flex;
     flex-direction: column;
@@ -15,37 +17,11 @@
     background-color: rgb(218, 180, 55); 
     border-radius: 1;
     border: 1px solid #000000;
-
 }
 
 .go-board-canvas {
     z-index: 1;  
 }
-
-.prisoners-container {
-    position: fixed; 
-    top: 10px; 
-    right: 10px; 
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end; 
-    z-index: 2; 
-}
-
-
-.prisoner-bowl {
-    width: 130px; 
-    height: 120px;
-    background-color: rgba(255, 255, 255, 0.8); 
-    border: 1px solid #000000; 
-    border-radius: 20px; 
-    position: relative;
-    overflow: hidden; 
-    
-
-}
-
-
 
 .stone {
     width: 20px;
@@ -64,6 +40,50 @@
     border:1px solid #000000;
 }
 
+/* Stats */ 
+
+.stats {
+    background-color: #000000;
+   border-radius: 20px;
+   transition: transform 0.6s ease;
+   border: 2px solid rgba(0, 0, 0, 0.349);
+}
+.stats.flipped {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
+}
+.prisoners-container {
+    position: fixed; 
+    top: 10px; 
+    right: 10px; 
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; 
+    z-index: 2; 
+}
+
+.prisoner-bowl {
+    width: 130px; 
+    height: 120px;
+    background-color: rgba(255, 255, 255, 0.8); 
+    border: 1px solid #000000; 
+    border-radius: 20px; 
+    position: relative;
+    overflow: hidden; 
+}
+
+.blacksBowl {
+    position: absolute;
+    bottom: 2rem;
+    right: 15%;
+}
+
+.whitesBowl {
+    position: absolute;
+    top: 3rem;
+    left: 15%;
+}
+
 .count {
     display: flex;
     justify-content: center;
@@ -71,39 +91,8 @@
     font-size: 16px; 
     text-align: center;
     z-index: 200;
-
     height: 2rem;
 }
-.blacksBowl {
-    position: absolute;
-    bottom: 2rem;
-    right: 15%;
-}
-.whitesBowl {
-    position: absolute;
-    top: 3rem;
-    left: 15%;
-}
-.stats {
-    background-color: #000000;
-   border-radius: 20px;
-   transition: transform 0.6s ease;
-   border: 2px solid rgba(0, 0, 0, 0.349);
-}
-
-
-.stats.flipped {
-    transform: rotate(180deg);
-    transition: transform 0.3s ease;
-}
-
-.prisoner-bowl {
-    position: relative;
-    width: 100px; 
-    height: 100px; 
-    overflow: hidden;
-}
-
 
 .passButton {
     width: 100%;
@@ -111,6 +100,18 @@
     border-radius: 18px;
 
 }
+
+.stats.highlight {
+    border: 2px solid rgba(25, 150, 0, 0.63);
+    transition: background-color 0.5s ease; 
+}
+.stats.flipped.highlight {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
+
+}
+
+/* NavBar Elements */ 
 
 nav {
     position: fixed;
@@ -134,29 +135,19 @@ nav {
     border-bottom: 1px solid white;
     border-radius: 0%;
     margin-bottom: 5px;
-    
-
 }
+
 .flipImg {
     height: 30px;
-
-
 }
+
 .resetImg {
     height: 30px;
 }
+
 .game-over-message {
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: large;    
-}
-.stats.highlight {
-    border: 2px solid rgba(25, 150, 0, 0.63);
-    transition: background-color 0.5s ease; 
-}
-.stats.flipped.highlight {
-    transform: rotate(180deg);
-    transition: transform 0.3s ease;
-
 }
