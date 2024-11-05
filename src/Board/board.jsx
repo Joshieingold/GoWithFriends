@@ -7,7 +7,8 @@ import "./Board.css";
 
 
 // This contains the data for the players captured stones.
-const PrisonerBowl = ({ color, count, isFlipped, onPass, isCurrentTurn }) => {
+// Requires knowledge of players color, prisoner count, if the display is flipped, pass function and whos turn it is.
+const PrisonerBowl = ({ color, count, isFlipped, onPass, isCurrentTurn }) => { 
     const stones = Array.from({ length: count }, (_, index) => index);
 
     return (
@@ -33,24 +34,28 @@ const PrisonerBowl = ({ color, count, isFlipped, onPass, isCurrentTurn }) => {
     );
 };
 
-
+// Main functions of the board.
 function Board() {
-    const canvasRef = useRef(null);
-    const [boardList, setBoardList] = useState(createBoard());
-    const [currentColor, setCurrentColor] = useState("black");
-    const [prisoners, setPrisoners] = useState({ black: 0, white: 0 }); 
-    const [passCount, setPassCount] = useState({ black: 0, white: 0 });
-    const [gameOver, setGameOver] = useState(false);
-    const [isWhiteFlipped, setIsWhiteFlipped] = useState(false);
+    
+    // Global Variables.
+    const canvasRef = useRef(null); // Blank canvas
+    const [boardList, setBoardList] = useState(createBoard()); //Current Record of the board.
+    const [currentColor, setCurrentColor] = useState("black"); // The color of the player, starting with black as per Go.
+    const [prisoners, setPrisoners] = useState({ black: 0, white: 0 }); // Contains the prisoner data for black and white stones.
+    const [passCount, setPassCount] = useState({ black: 0, white: 0 }); // Counts how many consequitive passes have happened.
+    const [gameOver, setGameOver] = useState(false); // State that activates after both players pass.
+    const [isWhiteFlipped, setIsWhiteFlipped] = useState(false); // Allows for opposite side player bowls.
 
+    // Plays any audio you pass to it when you want.
     function play(sound) {
         const audio = new Audio(sound);
-        audio.volume = 1.0;
+        audio.volume = 1.0; // Max sound.
         audio.play().catch(error => {
-            console.error("Audio play error:", error);
+            console.error("Could not load sound.", error); // Nice error catch.
         });
     }
 
+    // Resets the game to original states
     function resetGame() {
         setBoardList(createBoard());
         setCurrentColor("black");
@@ -59,21 +64,22 @@ function Board() {
         setGameOver(false);
     }
 
+    // Passes the turn of the player.
     function pass() {
         setPassCount(prev => {
             const newPassCount = { ...prev, [currentColor]: prev[currentColor] + 1 };
 
-            // Check if both players have passed
+            // If both players pass consequtively, the game will end.
             if (newPassCount.black > 0 && newPassCount.white > 0) {
-                console.log("Game Over!");
-                setGameOver(true); // Set game over state
+                setGameOver(true);
             }
-
+            // Changes to the next players move.
             setCurrentColor(currentColor === "black" ? "white" : "black");
             return newPassCount;
         });
     }
-
+    
+    // Creates an empty board.
     function createBoard() {
         const currentBoard = [];
         for (let i = 0; i < 19; i++) {
@@ -83,22 +89,23 @@ function Board() {
         return currentBoard;
     }
 
+    // Flips the white prisoner bowl.
     const toggleWhiteFlip = () => {
         setIsWhiteFlipped(prev => !prev);
     };
 
+    // Creates the boards designs
     useEffect(() => {
+        // Setup
         const canvas = canvasRef.current;
         const context = canvas.getContext("2d");
-
-
         const canvasSize = Math.min(window.innerWidth * 0.9, 570); // 90% of the window width, max 570px
         canvas.width = canvasSize;
         canvas.height = canvasSize;
-    
-        const cellSize = canvasSize / 19; // Adjust cell size based on canvas size
+        const cellSize = canvasSize / 19;
         context.clearRect(0, 0, canvas.width, canvas.height);
 
+        // Creates the Lines on the game board.
         context.strokeStyle = "#000000"; 
         for (let i = 0; i < 19; i++) {
             context.beginPath();
@@ -113,6 +120,7 @@ function Board() {
             context.stroke();
         }
 
+        // Function to draw dots for each hoshi point
         const drawHoshiPoints = () => {
             const hoshiPositions = [
                 { row: 3, col: 3 },
@@ -136,8 +144,10 @@ function Board() {
             });
         };
 
+        // Draws the hoshi points.
         drawHoshiPoints();
 
+        // Uses the board list to draw the stones based on their data.
         boardList.forEach((row, rowIndex) => {
             row.forEach((cell, colIndex) => {
                 if (cell) {
@@ -153,17 +163,18 @@ function Board() {
         });
     }, [boardList]);
 
+    // Function to check if every stone on the board has a liberty or not.
     const checkLiberties = (row, col, color) => {
         const liberties = new Set();
         const visited = new Set();
 
         const explore = (r, c) => {
-            if (r < 0 || r >= 19 || c < 0 || c >= 19 || visited.has(`${r},${c}`)) return;
-            visited.add(`${r},${c}`);
+            if (r < 0 || r >= 19 || c < 0 || c >= 19 || visited.has(`${r},${c}`)) return; // If it is greated than the board or less or we know it, loop back.
+            visited.add(`${r},${c}`); // Else, we add it to our visited list.
 
-            if (boardList[r][c] === null) {
-                liberties.add(`${r},${c}`);
-            } else if (boardList[r][c] === color) {
+            if (boardList[r][c] === null) { // Checks to see if there are blank areas around our stone if so, we know it has that liberty.
+                liberties.add(`${r},${c}`); 
+            } else if (boardList[r][c] === color) { // if we found a color you explore any attached areas to see if it has liberties.
                 explore(r - 1, c);
                 explore(r + 1, c);
                 explore(r, c - 1);
@@ -175,16 +186,18 @@ function Board() {
         return liberties.size > 0 ? liberties : null;
     };
 
+    // Function for checking if stones lost all their liberties and if they have captures them.
     const checkAndCapture = (row, col, color) => {
-        const opponentColor = color === "black" ? "white" : "black";
+        const opponentColor = color === "black" ? "white" : "black"; // opposite of the placed stones color.
         const capturedStones = [];
 
+        // Iderates over the connected stones finding if they are void of liberties or not.
         const checkLibertiesAndCapture = (r, c, visited) => {
             if (r < 0 || r >= 19 || c < 0 || c >= 19 || visited.has(`${r},${c}`)) return;
             visited.add(`${r},${c}`);
 
             if (boardList[r][c] === opponentColor) {
-                if (checkLiberties(r, c, opponentColor) === null) {
+                if (checkLiberties(r, c, opponentColor) === null) { // If all your liberties are your opponents we take your stone.
                     capturedStones.push([r, c]);
                     checkLibertiesAndCapture(r - 1, c, visited);
                     checkLibertiesAndCapture(r + 1, c, visited);
@@ -193,12 +206,14 @@ function Board() {
                 }
             }
         };
-
+        
+        // Checks everywhere.
         checkLibertiesAndCapture(row - 1, col, new Set());
         checkLibertiesAndCapture(row + 1, col, new Set());
         checkLibertiesAndCapture(row, col - 1, new Set());
         checkLibertiesAndCapture(row, col + 1, new Set());
 
+        // Adds to the correct prisoners list based on the amount of captured stones.
         if (capturedStones.length > 0) {
             const newBoardList = [...boardList];
             capturedStones.forEach(([r, c]) => {
@@ -212,27 +227,29 @@ function Board() {
         return capturedStones;
     };
 
+    // Handles clicking on the board and as such contains all checks laid out as well as progressing the game.
     const handleClick = (event) => {
-        if (gameOver) return; // Prevent placing stones if game is over
+        if (gameOver) return; // If the game is over you can't make new moves.
 
+        // Finds where you cicked and associates it with the correct location in our board list.
         const canvas = canvasRef.current;
         const rect = canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-
         const cellSize = 30;
         const colIndex = Math.floor(x / cellSize);
         const rowIndex = Math.floor(y / cellSize);
 
+        // If the spot clicked is empty, it will place a stone into the board list.
         if (boardList[rowIndex][colIndex] === null) {
             const newBoardList = [...boardList];
             newBoardList[rowIndex][colIndex] = currentColor;
 
-            // Play the sound for placing a stone
+            // Plays the sound for placing a stone
             play(place);
-            setPassCount({ black: 0, white: 0 }); // Reset pass counts on a valid move
+            setPassCount({ black: 0, white: 0 }); // Resets the passes as a player did not consequtively pass.
             
-            // Check for captures
+            // Checks for captures
             const capturedStones = checkAndCapture(rowIndex, colIndex, currentColor);
 
             // Play the sound for capturing if any stones were captured
@@ -240,6 +257,7 @@ function Board() {
                 play(capture);
             }
 
+            // Only allows players to place stones in locations where they will not die.
             const liberties = checkLiberties(rowIndex, colIndex, currentColor);
             if (liberties) {
                 setBoardList(newBoardList);
@@ -250,18 +268,26 @@ function Board() {
         }
     };
 
-
+    // This is the main board that is released to the website.
     return (
         <div className="mainContainer">
+            {/* This is the container for the left hand Navbar. */}
             <nav>
+                {/* Resets the game.*/}
                 <button onClick={resetGame} className="navButton reset">
                     <img src={resetIcon} alt="Reset Icon" className="resetImg" />
                 </button>
+
+                {/* Flips whites bowl for optional play experience */}
                 <button onClick={toggleWhiteFlip} className="navButton flip" alt="Flip">
                     <img src={flipIcon} className="flipImg" alt="Flip Icon" />
                 </button>
             </nav>
+
+            {/* This gets added when the game is over to the page. */}
             {gameOver && <div className="game-over-message">Game Over!</div>}
+
+            {/* This holds the board :)*/}
             <div className="board-container">
                 <canvas
                     ref={canvasRef}
@@ -272,24 +298,26 @@ function Board() {
                 />
                 <div alt="Go Board" className="go-board-image"></div>
             </div>
+
+            {/* The bowl of white containing their prisoner black stones. */}
             <div className="whitesBowl">
                 <PrisonerBowl 
                     color="black" 
                     count={prisoners.black} 
                     isFlipped={isWhiteFlipped} 
                     onPass={pass}
-                    isCurrentTurn={currentColor === "white"} // Highlight if it's black's turn
+                    isCurrentTurn={currentColor === "white"}
                 />
             </div>
+            {/* The bowl of black containing their prisoner white stones. */}
             <div className="blacksBowl">
                 <PrisonerBowl 
                     color="white" 
                     count={prisoners.white} 
                     onPass={pass}
-                    isCurrentTurn={currentColor === "black"} // Highlight if it's white's turn
+                    isCurrentTurn={currentColor === "black"}
                 />
             </div>
-            
         </div>
     );
 }
